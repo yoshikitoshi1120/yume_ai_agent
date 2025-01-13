@@ -3,9 +3,9 @@ import os
 from celery import Celery
 
 # 设置Django settings模块
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'your_project_name.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'yume_ai_agent.settings')
 
-app = Celery('your_project_name')
+app = Celery('yume_ai_agent')
 
 # 从Django settings.py中读取配置
 app.config_from_object('django.conf:settings', namespace='CELERY')
