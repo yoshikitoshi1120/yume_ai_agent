@@ -231,13 +231,3 @@ def text_summary(input_text):
         return response.choices[0].text.strip()
     except openai.error.OpenAIError as e:
         return f"call ai LLM error:{str(e)}"
-
-
-import chardet
-
-
-def handle_encoding(user_input):
-    detected_encoding = chardet.detect(user_input)['encoding']
-    if detected_encoding:
-        user_input = user_input.decode(detected_encoding).encode('utf-8')
-    return user_input

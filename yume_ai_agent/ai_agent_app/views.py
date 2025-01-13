@@ -1,6 +1,6 @@
 from django.http import JsonResponse
 import json
-from utils import handle_user_input
+from . import utils
 from django.views.decorators.csrf import csrf_exempt
 
 @csrf_exempt
@@ -10,7 +10,7 @@ def ai_agent_interaction(request):
             data = json.loads(request.body)
             user_input = data.get('input', '')
 
-            response_text = handle_user_input(user_input)
+            response_text = utils.handle_user_input(user_input)
 
             return JsonResponse({"response": response_text})
         except Exception as e:
