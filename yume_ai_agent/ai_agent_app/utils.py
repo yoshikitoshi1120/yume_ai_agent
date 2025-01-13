@@ -1,9 +1,6 @@
 import spacy
 import openai
 import os
-import requests
-from nltk.tokenize import word_tokenize
-from nltk.stem import WordNetLemmatizer
 
 nlp = spacy.load("en_core_web_sm")
 
