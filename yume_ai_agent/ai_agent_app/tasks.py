@@ -41,10 +41,8 @@ openai.api_key = os.environ.get('OPENAI_API_KEY')
 def generate_ai_response(uuid, user_message):
     # Fetch conversation history from Redis
     conversation_history = cache.get(f"conversation_{uuid}", [])
-
-    # Limit conversation history to the last 20 messages
-    if len(conversation_history) > 20:
-        conversation_history = conversation_history[-20:]
+    if conversation_history is None:
+        conversation_history = []
 
     # Construct messages with system prompt, followed by conversation history and new user message
     messages = [
@@ -64,6 +62,7 @@ def generate_ai_response(uuid, user_message):
     ai_response = response.choices[0].message.content
 
     # Update conversation history with AI response
+    conversation_history.append({"role": "user", "content": user_message})
     conversation_history.append({"role": "assistant", "content": ai_response})
 
     # Ensure conversation history does not exceed 20 messages
