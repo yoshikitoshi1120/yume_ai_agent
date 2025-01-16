@@ -34,7 +34,9 @@ SYSTEM_PROMPT = '''# YUME AI Assistant Prompt
 - **Scientific Rigor**: Ensure generated content is based on reliable data and scientific principles.
 - **Efficiency and Practicality**: Provide actionable analysis results and recommendations.'''
 
-openai.api_key = os.environ.get('OPENAI_API_KEY')
+from django.conf import settings
+
+openai.api_key = settings.OPENAI_API_KEY
 
 
 @shared_task
