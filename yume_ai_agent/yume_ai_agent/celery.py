@@ -2,13 +2,13 @@ from __future__ import absolute_import, unicode_literals
 import os
 from celery import Celery
 
-# 设置Django settings模块
+# set Django settings module
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'yume_ai_agent.settings')
 
 app = Celery('yume_ai_agent')
 
-# 从Django settings.py中读取配置
+# read config from Django settings.py
 app.config_from_object('django.conf:settings', namespace='CELERY')
 
-# 自动发现任务
+# auto discover task
 app.autodiscover_tasks()
