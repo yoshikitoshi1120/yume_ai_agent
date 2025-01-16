@@ -1,3 +1,5 @@
+import logging
+
 from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
 from celery.result import AsyncResult
@@ -12,14 +14,25 @@ def start_ai_response(request):
     task = generate_ai_response.delay(uuid, user_message)
     return JsonResponse({"task_id": task.id})
 
+
+logger = logging.getLogger(__name__)
+
+
 @require_http_methods(["GET"])
 def get_task_result(request, task_id):
-    task = AsyncResult(task_id)
+    try:
+        task = AsyncResult(task_id)
+    except Exception as e:
+        logger.error(f'Error retrieving task {task_id}: {e}')
+        return JsonResponse({"status": "error", "message": str(e)}, status=404)
+
     if task.ready():
         if task.failed():
-            return JsonResponse({"status": "failed", "error": str(task.result)})
+            logger.error(f'Task {task_id} failed: {task.result}')
+            return JsonResponse({"status": "failed", "error": str(task.result)}, status=200)
         else:
-            result = task.get()
-            return JsonResponse({"status": "success", "result": result})
+            logger.info(f'Task {task_id} succeeded: {task.result}')
+            return JsonResponse({"status": "success", "result": task.result}, status=200)
     else:
-        return JsonResponse({"status": "pending"})
+        logger.info(f'Task {task_id} is pending.')
+        return JsonResponse({"status": "pending"}, status=202)
