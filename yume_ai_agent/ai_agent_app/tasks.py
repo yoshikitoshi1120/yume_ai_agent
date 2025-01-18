@@ -35,8 +35,9 @@ SYSTEM_PROMPT = '''# YUME AI Assistant Prompt
 - **Efficiency and Practicality**: Provide actionable analysis results and recommendations.'''
 
 from django.conf import settings
+from openai import OpenAI
 
-openai.api_key = settings.OPENAI_API_KEY
+client = OpenAI(api_key=settings.OPENAI_API_KEY)
 
 
 @shared_task
@@ -54,7 +55,7 @@ def generate_ai_response(uuid, user_message):
     ]
 
     # Generate AI response
-    response = openai.ChatCompletion.create(
+    response = client.chat.completions.create(
         model="deepseek-chat",
         messages=messages,
         stream=False
