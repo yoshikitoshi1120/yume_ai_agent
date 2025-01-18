@@ -37,7 +37,7 @@ SYSTEM_PROMPT = '''# YUME AI Assistant Prompt
 from django.conf import settings
 from openai import OpenAI
 
-client = OpenAI(api_key=settings.OPENAI_API_KEY)
+client = OpenAI(api_key=settings.OPENAI_API_KEY,base_url="https://api.deepseek.com")
 
 
 @shared_task
