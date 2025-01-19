@@ -40,7 +40,6 @@ from openai import OpenAI
 client = OpenAI(api_key=settings.OPENAI_API_KEY,base_url="https://api.deepseek.com")
 
 
-@shared_task
 def generate_ai_response(uuid, user_message):
     # Fetch conversation history from Redis
     conversation_history = cache.get(f"conversation_{uuid}", [])

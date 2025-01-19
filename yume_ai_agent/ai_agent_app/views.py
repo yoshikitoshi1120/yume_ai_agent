@@ -13,8 +13,8 @@ def start_ai_response(request):
     if not uuid:
         return JsonResponse({"error": "UUID is missing."}, status=400)
     user_message = request.POST.get('message', '')
-    task = generate_ai_response.delay(uuid, user_message)
-    return JsonResponse({"task_id": task.id})
+    ai_message = generate_ai_response(uuid, user_message)
+    return JsonResponse({"ai_message": ai_message})
 
 
 logger = logging.getLogger(__name__)
