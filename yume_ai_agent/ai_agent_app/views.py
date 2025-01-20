@@ -39,3 +39,9 @@ def get_task_result(request, task_id):
     else:
         logger.info(f'Task {task_id} is pending.')
         return JsonResponse({"status": "pending"}, status=202)
+
+
+@require_http_methods(["POST"])
+@csrf_exempt
+def generate_bot_twitter(request):
+    return
