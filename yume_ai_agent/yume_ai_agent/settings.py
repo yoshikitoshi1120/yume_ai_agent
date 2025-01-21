@@ -25,7 +25,10 @@ env = environ.Env()
 environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 OPENAI_API_KEY = env('OPENAI_API_KEY', default='')
-
+TWITTER_CONSUMER_KEY = env('TWITTER_CONSUMER_KEY', default='')
+TWITTER_CONSUMER_SECRET = env('TWITTER_CONSUMER_SECRET', default='')
+TWITTER_ACCESS_TOKEN = env('TWITTER_ACCESS_TOKEN', default='')
+TWITTER_ACCESS_SECRET = env('TWITTER_ACCESS_SECRET', default='')
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
