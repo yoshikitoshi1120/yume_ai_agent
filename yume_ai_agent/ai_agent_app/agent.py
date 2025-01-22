@@ -169,7 +169,7 @@ class YUMEAgent:
         )
 
 
-        #self.twitter_api = _init_twitter_client()
+        self.twitter_api = _init_twitter_client()
 
     def generate_ai_response(self, uuid: str, user_message: str) -> str:
         """
