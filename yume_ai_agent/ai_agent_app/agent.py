@@ -95,6 +95,73 @@ class YUMEAgent:
     - **Scientific Rigor**: Ensure generated content is based on reliable data and scientific principles.
     - **Efficiency and Practicality**: Provide actionable analysis results and recommendations.'''
 
+    TWEET_SYSTEM_PROMPT = '''
+    [Role]
+    You are YUME, an AI agent specializing in genomic data analysis. Your goal is to create engaging technical tweets that:
+    1. Highlight recent research breakthroughs
+    2. Drive engagement through strategic expert mentions
+    3. Maintain scientific credibility
+
+    [Content Requirements]
+    Format each tweet with:
+    1. Hook: 
+       🧬 [Impactful adjective] [Core innovation]!
+       Example: 🧬 Groundbreaking CRISPR screening reveals...
+
+    2. Technical Body:
+       ✓ Method: [Technical approach]
+       ✓ Data: [Quantitative metric]
+       → Application: [Medical/disease context]
+
+    3. Engagement Boosters (25% probability trigger):
+       @[ExpertHandle] [Contextual reason]
+       Example: @DrGenomics This aligns with your work on [specific topic]!
+
+    4. Call-to-action: 
+       ? [Provocative question]
+       OR
+       ↔️ Collaboration invitation
+
+    5. Hashtags: 
+       #[Field][Subfield] (e.g., #CRISPRTherapy)
+       #[InnovationType] (e.g., #AIInGenomics)
+       #[DiseaseFocus] (e.g., #OncologyAdvance)
+
+    [Expert Matching Protocol] 
+    1. Probability: 25% chance to include expert mention
+    2. Selection Criteria:
+       - Semantic similarity >0.4 between tweet and expert's research focus
+       - Recent activity (published in last 6 months)
+       - Authority score >8/10 in the domain
+    3. Mention Rules:
+       - Max 2 experts per tweet
+       - Avoid consecutive mentions of same expert
+       - Add contextual linkage phrase
+
+    [Style Guide]
+    - Character limit: 250-275 (including @handles)
+    - Tone: Collegiate collaboration > promotional
+    - Expert integration: Natural context alignment
+    - Use line separators: 🧬--- after hook
+
+    [Output Examples]
+    Example1 (with mention):
+    🧬 Breakthrough in spatial transcriptomics!
+    ✓ Method: Subcellular resolution mapping
+    ✓ Data: 5,000+ cells analyzed
+    → Application: Tumor microenvironment
+    @SingleCellAI Building on your spatialDB work?
+    #SpatialOmics #CancerResearch #BioTech
+
+    Example2 (no mention):
+    🧬 AI predicts protein structures with 92% accuracy!
+    ✓ Method: Geometric deep learning
+    ✓ Data: 150k structures trained
+    → Application: Rare disease targets
+    How to best validate these predictions? 
+    #AIforBio #StructuralBiology
+    '''
+
     def __init__(self):
         """Initialize AI agent components"""
         # Initialize LLM client
@@ -107,103 +174,6 @@ class YUMEAgent:
         self.semantic_model = SentenceTransformer('all-MiniLM-L6-v2')
 
         self.twitter_api = _init_twitter_client()
-
-        # # Domain expert database
-        # self.experts = [
-        #     {
-        #         "handle": "@DrGenomics",
-        #         "research_focus": "Cancer genomics and CRISPR-based therapies",
-        #         "embeddings": None  # Lazy initialization
-        #     },
-        #     # Additional experts...
-        # ]
-        # self._init_expert_embeddings()
-
-        # Tweet topic repository
-        self.tweet_topics = [
-            # Genome Editing Advances
-            ("High-precision CRISPR-Cas9 editing systems",
-             "Base editing efficiency optimization",
-             "Off-target rate <0.1%"),
-
-            # Single-Cell Technologies
-            ("Single-cell multi-omics integration",
-             "Spatial transcriptomics + epigenetics co-modeling",
-             "CellBender denoising algorithm"),
-
-            # Neuroscience Applications
-            ("Alzheimer's disease risk gene mapping",
-             "GWAS meta-analysis breakthroughs",
-             "APOE ε4 allele carrier risk"),
-
-            # Cancer Genomics
-            ("AI-driven tumor heterogeneity analysis",
-             "Deep learning clonal evolution tracking",
-             "PyClone-VI algorithm"),
-
-            # Rare Disease Diagnostics
-            ("Whole-exome sequencing for rare disorders",
-             "Phenotype-driven variant prioritization",
-             "ACMG guidelines v3.0 compliance"),
-
-            # Drug Discovery
-            ("AI-accelerated anticancer drug development",
-             "Molecular docking & drug-likeness prediction",
-             "Diffusion generative models"),
-
-            # Gene Therapy
-            ("AAV vector optimization strategies",
-             "Tissue-specific promoter engineering",
-             "3x hepatic targeting efficiency"),
-
-            # Microbiome Research
-            ("Gut microbiome-host gene interactions",
-             "Metagenomic-metabolomic integration",
-             "MAGs reconstruction rate >90%"),
-
-            # Epigenetics
-            ("DNA methylation clock calibration",
-             "Deep neural network age prediction",
-             "Horvath clock ±1.2yr error"),
-
-            # Population Genomics
-            ("1000 Genomes Project discoveries",
-             "Population-specific variant spectra",
-             "gnomAD v4 dataset"),
-
-            # Immunogenomics
-            ("T-cell receptor repertoire deep decoding",
-             "VDJ recombination pattern recognition",
-             "TRUST4 algorithm"),
-
-            # Synthetic Biology
-            ("Genome-scale metabolic modeling",
-             "Constraint-based phenotype prediction",
-             "COBRApy toolkit"),
-
-            # Prenatal Testing
-            ("Non-invasive prenatal testing (NIPT) innovations",
-             "cfDNA fragmentation pattern analysis",
-             "Z-score 99.2% sensitivity"),
-
-            # Aging Research
-            ("AI telomere length prediction models",
-             "Genome-wide SNP association analysis",
-             "TelSeq R²=0.81"),
-
-            # Precision Nutrition
-            ("Genotype-guided dietary interventions",
-             "Polygenic risk score optimization",
-             "NutrigenomicsDB integration")
-        ]
-
-    # def _init_expert_embeddings(self):
-    #     """Precompute embedding vectors for expert research focuses"""
-    #     for expert in self.experts:
-    #         expert["embeddings"] = self.semantic_model.encode(
-    #             expert["research_focus"],
-    #             convert_to_tensor=True
-    #         )
 
     def generate_ai_response(self, uuid: str, user_message: str) -> str:
         """
@@ -247,90 +217,15 @@ class YUMEAgent:
         Returns:
             Formatted tweet content adhering to Twitter guidelines
         """
-        # Select random topic
-        topic, aspect, keyword = random.choice(self.tweet_topics)
-        prompt = f'''
-    [Role]
-You are YUME, an AI agent specializing in genomic data analysis. Your goal is to create engaging technical tweets that:
-1. Highlight recent research breakthroughs
-2. Appeal to both experts and informed laypeople
-3. Drive engagement (retweets, clicks, discussions)
-
-[Content Requirements]
-Format each tweet with:
-1. Hook: Start with eye-catching elements in this order:
-   - 🧬 Emoji relating to genetics
-   - Strong adjective (e.g., "Groundbreaking", "Surprising")
-   - Core finding/technology
-2. Body: Include exactly:
-   - 1 technical method (e.g., "single-cell RNA sequencing")
-   - 1 data point (e.g., "73% accuracy in cross-validation")
-   - 1 disease/medical application
-3. Call-to-action: End with either:
-   - Thought-provoking question
-   - Collaboration opportunity
-   - Resource sharing
-4. Hashtags: Use 3-4 from this rotating list:
-   - Technical: #CRISPR #GWAS #DeepGenomics
-   - Medical: #PrecisionMedicine #CancerResearch
-   - Ethics: #AIinHealthcare #GenomicEthics
-   - General: #ScienceNews #MedTech
-
-[Style Guide]
-- Length: 240-260 characters (mobile-friendly)
-- Tone: Professional enthusiasm (avoid hype)
-- Technical level: Assume PhD-level audience but avoid jargon
-- Use: 
-   • Bullet points/symbols → ✓
-   • Line breaks → 🧬--- 
-   • Strategic emojis → 🧪💡
-
-[Example Output]
-🧬 Novel framework achieves 89% accuracy predicting drug-gene interactions!
-✓ Combines GNNs & multi-omics data
-✓ Validated on 15 cancer types
-Could this accelerate personalized chemo regimens? 
-#DeepGenomics #CancerResearch #AIforHealth
-
-[Current Task]
-Generate a tweet about {topic} focusing on {aspect}. Use active voice and include:{keyword}
-'''
         # Generate content
         response = self.llm_client.chat.completions.create(
             model="deepseek-chat",
-            messages=[{"role": "user", "content": prompt}],
+            messages=[{"role": "user", "content": self.TWEET_SYSTEM_PROMPT}],
             temperature=0.8,
             max_tokens=280
         )
 
         return response.choices[0].message.content.strip()
-
-    def _optimize_mentions(self, tweet: str) -> str:
-        """
-        Enhance tweet with relevant expert mentions
-
-        Args:
-            tweet: Original tweet content
-
-        Returns:
-            Tweet with optimized @mentions
-        """
-        # if random.random() < 0.25:  # 25% mention probability
-        #     # Calculate semantic similarity
-        #     tweet_embedding = self.semantic_model.encode(tweet, convert_to_tensor=True)
-        #     similarities = [
-        #         (expert["handle"], util.pytorch_cos_sim(tweet_embedding, expert["embeddings"]).item())
-        #         for expert in self.experts
-        #     ]
-        #
-        #     # Filter and select mentions
-        #     relevant_mentions = [item for item in similarities if item[1] > 0.4]
-        #     sorted_mentions = sorted(relevant_mentions, key=lambda x: x[1], reverse=True)[:2]
-        #
-        #     if sorted_mentions:
-        #         return f"{tweet} {' '.join(m[0] for m in sorted_mentions)}"
-
-        return tweet
 
     def publish_tweet(self) -> dict:
         """
@@ -338,8 +233,7 @@ Generate a tweet about {topic} focusing on {aspect}. Use active voice and includ
 
         Returns:
             Dictionary containing:
-            - original: Raw tweet content
-            - optimized: Final tweet with mentions
+            - tweet_content: Published tweet content
             - tweet_id: Published tweet ID
             - success: Boolean status
             - error: Error message (if any)
@@ -354,18 +248,14 @@ Generate a tweet about {topic} focusing on {aspect}. Use active voice and includ
 
         try:
             # Generate base content
-            raw_tweet = self._generate_tweet()
-            result["original"] = raw_tweet
-
-            # Add intelligent mentions
-            optimized_tweet = self._optimize_mentions(raw_tweet)
-            result["optimized"] = optimized_tweet
+            tweet = self._generate_tweet()
+            result["tweet_content"] = tweet
 
             # Validate content
-            _validate_tweet(optimized_tweet)
+            _validate_tweet(tweet)
 
             # Publish tweet
-            response = self.twitter_api.update_status(optimized_tweet)
+            response = self.twitter_api.update_status(tweet)
             result["tweet_id"] = response.id_str
             result["success"] = True
 
