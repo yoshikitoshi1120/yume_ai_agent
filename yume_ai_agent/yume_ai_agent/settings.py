@@ -51,7 +51,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'ai_agent_app',
     'corsheaders',
-    'ai_agent_app.tasks'
 ]
 
 CELERY_BROKER_URL = 'redis://localhost:6379/0'

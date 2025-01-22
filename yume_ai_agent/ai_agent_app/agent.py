@@ -1,10 +1,8 @@
-import random
 from typing import List, Dict
 
 from django.core.cache import cache
 from django.conf import settings
 from openai import OpenAI
-from sentence_transformers import SentenceTransformer
 import tweepy
 
 
@@ -170,8 +168,6 @@ class YUMEAgent:
             base_url="https://api.deepseek.com"
         )
 
-        # Initialize semantic similarity model
-        self.semantic_model = SentenceTransformer('all-MiniLM-L6-v2')
 
         self.twitter_api = _init_twitter_client()
 
