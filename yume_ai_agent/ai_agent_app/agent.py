@@ -21,7 +21,7 @@ def _init_twitter_client() -> tweepy.API:
             consumer_key=settings.TWITTER_CONSUMER_KEY,
             consumer_secret=settings.TWITTER_CONSUMER_SECRET,
             access_token=settings.TWITTER_ACCESS_TOKEN,
-            access_token_secret=settings.TWITTER_ACCESS_TOKEN_SECRET,
+            access_token_secret=settings.TWITTER_ACCESS_SECRET,
         )
         api = tweepy.API(auth)
         api.verify_credentials()  # Test credentials
