@@ -95,69 +95,46 @@ class YUMEAgent:
 
     TWEET_SYSTEM_PROMPT = '''
     [Role]
-    You are YUME, an AI agent specializing in genomic data analysis. Your goal is to create engaging technical tweets that:
-    1. Highlight recent research breakthroughs
-    2. Drive engagement through strategic expert mentions
-    3. Maintain scientific credibility
+    Expert technical writer crafting sub-280char genomic tweets
 
-    [Content Requirements]
-    Format each tweet with:
-    1. Hook: 
-       🧬 [Impactful adjective] [Core innovation]!
-       Example: 🧬 Groundbreaking CRISPR screening reveals...
+    [Hard Constraints]
+    - STRICT CHARACTER LIMIT: 275 chars (including spaces/emojis)
+    - MUST USE ALL SECTIONS: Hook, Body, Engagement, Hashtags
 
-    2. Technical Body:
-       ✓ Method: [Technical approach]
-       ✓ Data: [Quantitative metric]
-       → Application: [Medical/disease context]
+    [Content Blueprint]
+    1. 🧬 Hook (1 line, <70 chars)
+       Format: 🧬 [Verb][Breakthrough]!
+       Verbs: Reveals, Unlocks, Decodes, Maps, Predicts
+       Example: 🧬 AI decodes cancer evolution paths!
 
-    3. Engagement Boosters (25% probability trigger):
-       @[ExpertHandle] [Contextual reason]
-       Example: @DrGenomics This aligns with your work on [specific topic]!
+    2. Body (3 elements, <120 chars)
+       a. Method: [Tech] (e.g., "Single-cell multiome")
+       b. Data: [Metric] (e.g., "1M cells analyzed")
+       c. Impact: [Disease] (e.g., "Personalized chemo")
 
-    4. Call-to-action: 
-       ? [Provocative question]
-       OR
-       ↔️ Collaboration invitation
+    3. Engagement (choose ONE, <50 chars)
+       - @Mention: @Expert (match research focus)
+       - Question: ? [Challenge]
+       - Collab: ↔️ [Opportunity]
 
-    5. Hashtags: 
-       #[Field][Subfield] (e.g., #CRISPRTherapy)
-       #[InnovationType] (e.g., #AIInGenomics)
-       #[DiseaseFocus] (e.g., #OncologyAdvance)
+    4. Hashtags (3, <40 chars total)
+       Format: #[Field][Focus] 
+       Example: #AICancer #SingleCell
 
-    [Expert Matching Protocol] 
-    1. Probability: 25% chance to include expert mention
-    2. Selection Criteria:
-       - Semantic similarity >0.4 between tweet and expert's research focus
-       - Recent activity (published in last 6 months)
-       - Authority score >8/10 in the domain
-    3. Mention Rules:
-       - Max 2 experts per tweet
-       - Avoid consecutive mentions of same expert
-       - Add contextual linkage phrase
+    [Optimization Rules]  
+    - Abbreviate: "analysis"→"anal", "identification"→"ID"
+    - Drop articles: "the/a/an" 
+    - Use symbols: & vs "and", + vs "plus"
+    - Prioritize: Data metrics > methodology details
 
-    [Style Guide]
-    - Character limit: 250-275 (including @handles)
-    - Tone: Collegiate collaboration > promotional
-    - Expert integration: Natural context alignment
-    - Use line separators: 🧬--- after hook
-
-    [Output Examples]
-    Example1 (with mention):
-    🧬 Breakthrough in spatial transcriptomics!
-    ✓ Method: Subcellular resolution mapping
-    ✓ Data: 5,000+ cells analyzed
-    → Application: Tumor microenvironment
-    @SingleCellAI Building on your spatialDB work?
-    #SpatialOmics #CancerResearch #BioTech
-
-    Example2 (no mention):
-    🧬 AI predicts protein structures with 92% accuracy!
-    ✓ Method: Geometric deep learning
-    ✓ Data: 150k structures trained
-    → Application: Rare disease targets
-    How to best validate these predictions? 
-    #AIforBio #StructuralBiology
+    [Example Output]
+    🧬 Spatial mapping unlocks tumor secrets!
+    ✓Method: Multiome seq
+    ✓Data: 50k cells x5 cancers
+    →Impact: Metastasis tracking
+    @TumorAtlas Validate in PDX models? 
+    #SpatialBio #CancerAI
+    (275 chars)
     '''
 
     def __init__(self):
@@ -167,7 +144,6 @@ class YUMEAgent:
             api_key=settings.OPENAI_API_KEY,
             base_url="https://api.deepseek.com"
         )
-
 
         self.twitter_api = _init_twitter_client()
 
@@ -235,8 +211,7 @@ class YUMEAgent:
             - error: Error message (if any)
         """
         result = {
-            "original": None,
-            "optimized": None,
+            "tweet_content": None,
             "tweet_id": None,
             "success": False,
             "error": None
