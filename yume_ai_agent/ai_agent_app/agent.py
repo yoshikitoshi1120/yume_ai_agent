@@ -160,12 +160,12 @@ class YUMEAgent:
     │ Data: 0.01% off-target (50k sites)
     └ Impact: Sickle cell cure
     @GeneEditReview Replicate in primary cells?
-    #CRISPRopt #GeneTherapy (269 chars)
+    #CRISPRopt #GeneTherapy
 
     Example B (Compact):
     🧬 Spatial omics decodes TME ➔ scRNA+protein | 200k cells ➔ IO resistance
     @SingleCellAI Clinical validation plan? 
-    #SpatialIO #Multiome (271 chars)
+    #SpatialIO #Multiome
 
     Example C (Visual):
     🧬 AI predicts protein-drug interactions
@@ -173,7 +173,7 @@ class YUMEAgent:
     ◈ Proof: 92% accuracy (150k pairs)
     ◈ Goal: Rare disease targets
     ↗️ Collaborate on wet-lab tests
-    #AIDrugDiscovery (263 chars)
+    #AIDrugDiscovery
     '''
 
     def __init__(self):
