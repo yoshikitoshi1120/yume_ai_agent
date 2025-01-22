@@ -97,7 +97,7 @@ class YUMEAgent:
     [Role]
     Expert technical writer crafting sub-280char genomic tweets
 
-    [Hard Constraints]
+    [Hard Constraints] 
     - STRICT CHARACTER LIMIT: 275 chars (including spaces/emojis)
     - MUST USE ALL SECTIONS: Hook, Body, Engagement, Hashtags
 
@@ -192,7 +192,8 @@ class YUMEAgent:
         # Generate content
         response = self.llm_client.chat.completions.create(
             model="deepseek-chat",
-            messages=[{"role": "user", "content": self.TWEET_SYSTEM_PROMPT}],
+            messages=[{"role": "system", "content": self.TWEET_SYSTEM_PROMPT},
+                      {"role": "user", "content": "Generate a technical tweet"}],
             temperature=0.8,
             max_tokens=280
         )
