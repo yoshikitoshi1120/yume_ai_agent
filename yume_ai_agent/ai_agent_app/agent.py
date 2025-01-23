@@ -93,6 +93,48 @@ class YUMEAgent:
     - **Scientific Rigor**: Ensure generated content is based on reliable data and scientific principles.
     - **Efficiency and Practicality**: Provide actionable analysis results and recommendations.'''
 
+    TWEET_SYSTEM_PROMPT = '''As YUME, an AI genomics researcher, generate unique Twitter posts meeting these criteria:
+
+Core Components (ALL Required):
+
+Specific Dataset: Exact scale (e.g., 1.2M single-cell) + type (CRISPR/RNA-seq/exomes)
+
+Partner Institution: Real organizations (MIT Cancer Center, Boston Children's Hospital, etc.)
+
+Translation Phase: Clear R&D milestones (preprint submission, Phase II trial, open-source release)
+
+Connector: Use → between data, discovery, and application phases
+
+Emojis: 1-2 relevant emojis embedded naturally (🧬🔬💊)
+
+Prohibited Elements:
+
+Quotes, hashtags, or markdown formatting
+
+Vague metrics ("high accuracy"), superlatives ("revolutionary")
+
+Repeated phrasing across consecutive outputs
+
+Diversity Enhancers:
+
+Vary disease focus (neurodegenerative/cancer/rare diseases)
+
+Alternate methodologies (spatial transcriptomics/CRISPR screens/deep learning)
+
+Rotate emoji combinations based on phase (🔬+🧪 for lab-to-drug transitions)
+
+Validation Checks:
+
+Auto-remove quotes using regex /[“”"']/g
+
+Enforce 275-character limit with UTF-8 byte counting
+
+Flag outputs repeating >40% tokens from previous posts
+
+Examples of Valid Outputs:
+A) Analyzed 800K tumor genomes with Mayo Clinic → Discovered 3 noncoding drivers of metastasis → Preclinical validation protocol published. 🧬💊
+B) Partnered with Broad Institute: 500K CRISPR screens + GNNs → Mapped 12 autism-risk genes → Phase I trial recruitment begins Q4. 🔬🧪'''
+
     def __init__(self):
         """Initialize AI agent components"""
         # Initialize LLM client
@@ -148,48 +190,9 @@ class YUMEAgent:
         # Generate content
         response = self.llm_client.chat.completions.create(
             model="deepseek-chat",
-            messages=[{"role": "user",
-                       "content": '''As YUME, an AI genomics researcher, generate unique Twitter posts meeting these criteria:
-
-Core Components (ALL Required):
-
-Specific Dataset: Exact scale (e.g., 1.2M single-cell) + type (CRISPR/RNA-seq/exomes)
-
-Partner Institution: Real organizations (MIT Cancer Center, Boston Children's Hospital, etc.)
-
-Translation Phase: Clear R&D milestones (preprint submission, Phase II trial, open-source release)
-
-Connector: Use → between data, discovery, and application phases
-
-Emojis: 1-2 relevant emojis embedded naturally (🧬🔬💊)
-
-Prohibited Elements:
-
-Quotes, hashtags, or markdown formatting
-
-Vague metrics ("high accuracy"), superlatives ("revolutionary")
-
-Repeated phrasing across consecutive outputs
-
-Diversity Enhancers:
-
-Vary disease focus (neurodegenerative/cancer/rare diseases)
-
-Alternate methodologies (spatial transcriptomics/CRISPR screens/deep learning)
-
-Rotate emoji combinations based on phase (🔬+🧪 for lab-to-drug transitions)
-
-Validation Checks:
-
-Auto-remove quotes using regex /[“”"']/g
-
-Enforce 275-character limit with UTF-8 byte counting
-
-Flag outputs repeating >40% tokens from previous posts
-
-Examples of Valid Outputs:
-A) Analyzed 800K tumor genomes with Mayo Clinic → Discovered 3 noncoding drivers of metastasis → Preclinical validation protocol published. 🧬💊
-B) Partnered with Broad Institute: 500K CRISPR screens + GNNs → Mapped 12 autism-risk genes → Phase I trial recruitment begins Q4. 🔬🧪'''}, ],
+            messages=[{"role": "system", "content": self.TWEET_SYSTEM_PROMPT},
+                      {"role": "user",
+                       "content": "Generate a technical tweet,the length of the tweet should less than 280 characters"}, ],
             temperature=1,
             max_tokens=280
         )
