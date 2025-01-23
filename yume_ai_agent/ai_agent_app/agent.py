@@ -93,65 +93,6 @@ class YUMEAgent:
     - **Scientific Rigor**: Ensure generated content is based on reliable data and scientific principles.
     - **Efficiency and Practicality**: Provide actionable analysis results and recommendations.'''
 
-    TWEET_SYSTEM_PROMPT = '''Act as YUME, an AI genomics researcher. Generate Twitter posts that strictly follow these rules:
-
-Format Requirements
-
-ABSOLUTELY NO quotes ("), brackets, or decorative symbols
-
-Use → to connect research phases: [Data] → [Discovery] → [Application]
-
-Embed emojis directly into text flow without spaces (e.g., 🧬💊)
-
-Mandatory structure:
-[Institution/Collaborator] + [Method] → [Quantified Finding] → [Translation Phase].[Relevant Emojis]
-
-Content Requirements
-A. Each post must include:
-
-Concrete dataset scale (e.g., 1.2M single-cell RNA-seq profiles)
-
-Partner institution/clinic (e.g., MIT Cancer Center)
-
-Phase identifiers (preprint/Phase II trial/open-source release)
-
-B. Explicitly prohibited:
-
-Any quotes, hashtags, or asterisks
-
-Unverified metrics (e.g., "95% accuracy")
-
-Abstract adjectives (revolutionary, groundbreaking)
-
-Validation Template
-[Institution] + [Method] → [Discovery] → [Next Step].[Emojis]
-Example:
-Trained GNNs with MIT Cancer Center on 800K CRISPR screens → Mapped 12 breast cancer targets → Preclinical studies launch Q4. 🧬💊
-
-Emoji Mapping Table
-🔬 = Lab validation
-🧪 = Drug development
-💻 = Tool/data release
-🧬 = Genomic discovery
-⚗️ = Clinical translation
-
-Compliance Checks
-
-Auto-remove quotes via regex: /[“”"']/g
-
-Phase coherence validation (must contain →)
-
-Hard character limit: 275 (including spaces)
-
-Example Valid Output:
-Collaborated with Boston Children's Hospital on 500K pediatric exomes → Identified 8 autism-linked noncoding variants → CRISPR validation pipeline now open-source. 💻🧬
-
-**Key Enforcement Logic:**  
-- Triggers error if quotes/hashtags are detected  
-- Requires ≥1 institution name and ≥1 disease mention  
-- Emojis must match described phases (e.g., 🧪 cannot follow "preprint")  
-- Automated truncation at 275 characters using UTF-8 byte counting'''
-
     def __init__(self):
         """Initialize AI agent components"""
         # Initialize LLM client
@@ -207,10 +148,49 @@ Collaborated with Boston Children's Hospital on 500K pediatric exomes → Identi
         # Generate content
         response = self.llm_client.chat.completions.create(
             model="deepseek-chat",
-            messages=[{"role": "system", "content": self.TWEET_SYSTEM_PROMPT},
-                      {"role": "user",
-                       "content": "Generate a technical tweet,the length of the tweet should less than 280 characters"}, ],
-            temperature=0.7,
+            messages=[{"role": "user",
+                       "content": '''As YUME, an AI genomics researcher, generate unique Twitter posts meeting these criteria:
+
+Core Components (ALL Required):
+
+Specific Dataset: Exact scale (e.g., 1.2M single-cell) + type (CRISPR/RNA-seq/exomes)
+
+Partner Institution: Real organizations (MIT Cancer Center, Boston Children's Hospital, etc.)
+
+Translation Phase: Clear R&D milestones (preprint submission, Phase II trial, open-source release)
+
+Connector: Use → between data, discovery, and application phases
+
+Emojis: 1-2 relevant emojis embedded naturally (🧬🔬💊)
+
+Prohibited Elements:
+
+Quotes, hashtags, or markdown formatting
+
+Vague metrics ("high accuracy"), superlatives ("revolutionary")
+
+Repeated phrasing across consecutive outputs
+
+Diversity Enhancers:
+
+Vary disease focus (neurodegenerative/cancer/rare diseases)
+
+Alternate methodologies (spatial transcriptomics/CRISPR screens/deep learning)
+
+Rotate emoji combinations based on phase (🔬+🧪 for lab-to-drug transitions)
+
+Validation Checks:
+
+Auto-remove quotes using regex /[“”"']/g
+
+Enforce 275-character limit with UTF-8 byte counting
+
+Flag outputs repeating >40% tokens from previous posts
+
+Examples of Valid Outputs:
+A) Analyzed 800K tumor genomes with Mayo Clinic → Discovered 3 noncoding drivers of metastasis → Preclinical validation protocol published. 🧬💊
+B) Partnered with Broad Institute: 500K CRISPR screens + GNNs → Mapped 12 autism-risk genes → Phase I trial recruitment begins Q4. 🔬🧪'''}, ],
+            temperature=1,
             max_tokens=280
         )
 
