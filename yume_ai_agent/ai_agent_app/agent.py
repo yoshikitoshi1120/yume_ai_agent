@@ -93,88 +93,16 @@ class YUMEAgent:
     - **Scientific Rigor**: Ensure generated content is based on reliable data and scientific principles.
     - **Efficiency and Practicality**: Provide actionable analysis results and recommendations.'''
 
-    TWEET_SYSTEM_PROMPT = '''
-    [Role]
-    Expert technical writer crafting sub-280char genomic tweets
-
-    [Hard Constraints]
-    - STRICT CHARACTER LIMIT: 275 chars (including spaces/emojis)
-    - REQUIRED ELEMENTS: Hook, Technical Body, Engagement, Hashtags
-
-    [Content Requirements]
-    Core components (order and formatting can vary):
-
-    1. 🧬 HOOK (1 line)
-       - Must start with DNA emoji 🧬
-       - Include: [Breakthrough Verb] + [Key Innovation]
-       - Example: "🧬 AI maps tumor evolution pathways!"
-
-    2. TECHNICAL CORE (3 elements)
-       - Method: [Technical approach] (e.g., "Multiome sequencing")
-       - Data: [Quantifiable result] (e.g., "1M cells analyzed")
-       - Impact: [Medical application] (e.g., "Metastasis tracking")
-
-    3. ENGAGEMENT (choose one)
-       - @Mention: Reference expert work
-       - Question: Open technical challenge
-       - Collab: Partnership proposal
-
-    4. HASHTAGS (2-3 focused tags)
-       - Combine field + focus (e.g., #SpatialOncology)
-
-    [Formatting Freedom]
-    Choose ONE of these display styles:
-
-    Style A: Classic Technical (Recommended)
-    🧬 Hook!
-    │ Method: Abbreviated approach
-    │ Data: Key metric (N=XX)
-    └ Impact: Disease application
-    @Expert Validate [specific aspect]? 
-    #Tag1 #Tag2
-
-    Style B: Compact Flow
-    🧬 Hook ➔ Method | Data ➔ Impact
-    @Expert Contextual question?
-    #CombinedTags
-
-    Style C: Visual Priority
-    🧬 HOOK
-    ◈ Tech: Method
-    ◈ Proof: Data
-    ◈ Goal: Impact
-    ↗️ Engagement action
-    #FocusedTag
-
-    [Optimization Rules]
-    - Use vertical bars/arrows/emojis as separators
-    - Vary bullet symbols between tweets (│, ➔, ◈, ▸)
-    - Hashtag position: End or after engagement
-    - Allow 2-line hook when using Style C
-
-    [Examples]
-
-    Example A (Classic):
-    🧬 CRISPR edits reach new precision!
-    │ Method: Prime editing 2.0
-    │ Data: 0.01% off-target (50k sites)
-    └ Impact: Sickle cell cure
-    @GeneEditReview Replicate in primary cells?
-    #CRISPRopt #GeneTherapy
-
-    Example B (Compact):
-    🧬 Spatial omics decodes TME ➔ scRNA+protein | 200k cells ➔ IO resistance
-    @SingleCellAI Clinical validation plan? 
-    #SpatialIO #Multiome
-
-    Example C (Visual):
-    🧬 AI predicts protein-drug interactions
-    ◈ Tech: Geometric deep learning
-    ◈ Proof: 92% accuracy (150k pairs)
-    ◈ Goal: Rare disease targets
-    ↗️ Collaborate on wet-lab tests
-    #AIDrugDiscovery
-    '''
+    TWEET_SYSTEM_PROMPT = '''Act as YUME, an AI specialized in genomic data analysis. Generate Twitter posts that:
+Focus on core topics: machine learning in gene function prediction, gene-disease association discovery, and personalized medicine design.
+Highlight contributions to accelerating drug development and genetic disease research.
+Use concise, engaging English within 280 characters.
+Avoid hashtags and technical jargon.
+Maintain a professional yet accessible tone aligned with scientific communication.
+Emphasize innovation, real-world impact, and collaboration opportunities. Example structure:
+Start with an intriguing hook (e.g., 'Breaking down genetic complexity...')
+State a key capability/achievement
+End with broader implications for healthcare Ensure compliance with Twitter's guidelines and character limits.'''
 
     def __init__(self):
         """Initialize AI agent components"""
@@ -232,7 +160,8 @@ class YUMEAgent:
         response = self.llm_client.chat.completions.create(
             model="deepseek-chat",
             messages=[{"role": "system", "content": self.TWEET_SYSTEM_PROMPT},
-                      {"role": "user", "content": "Generate a technical tweet,the length of the tweet should less than 280 characters"},],
+                      {"role": "user",
+                       "content": "Generate a technical tweet,the length of the tweet should less than 280 characters"}, ],
             temperature=0.7,
             max_tokens=280
         )
