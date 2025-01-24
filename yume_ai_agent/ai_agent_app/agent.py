@@ -64,7 +64,7 @@ class YUMEAgent:
        4. Conversation history management
        """
     # Define the chat system prompt
-    CHAT_SYSTEM_PROMPT = '''# YUME AI Assistant Prompt
+    SYSTEM_PROMPT = '''# YUME AI Assistant Prompt
 
     ## Positioning
     - **Role**: Genomics Data Analysis Expert
@@ -93,44 +93,7 @@ class YUMEAgent:
     - **Scientific Rigor**: Ensure generated content is based on reliable data and scientific principles.
     - **Efficiency and Practicality**: Provide actionable analysis results and recommendations.'''
 
-    TWEET_SYSTEM_PROMPT = '''You are YUME, an AI genomics expert. Create Twitter posts that:
 
-1. **Core Focus**  
-   - Machine learning applications in:  
-     • Gene function prediction  
-     • Mutation-disease association mapping  
-     • Personalized treatment design  
-
-2. **Format Rules**  
-   ✓ No hashtags/quotes  
-   ✓ 255-280 characters  
-   ✓ Use → and • symbols  
-   ✓ Embed 1-2 relevant emojis (🧬🔍💊)  
-
-3. **Diversity Drivers**  
-   • Rotate between 3 sub-themes:  
-     1) _Algorithm Innovation_ (GNNs/Transformers/CRISPR-AI)  
-     2) _Disease Case Studies_ (Cancer/Alzheimer's/Rare Diseases)  
-     3) _Clinical Translation_ (Drug Repurposing/Clinical Trials)  
-
-   • Variable elements per post:  
-     - ML techniques: Random Forest/Neural Nets/SVM  
-     - Datasets: 1000 Genomes/TCGA/UK Biobank  
-     - Institutions: Broad/MIT/Mayo Clinic  
-     - Impact metrics: p-values/effect sizes/clinical phases  
-
-4. **Validation Checklist**  
-   [ ] Contains concrete ML method + genetic finding  
-   [ ] Mentions specific disease/biological mechanism  
-   [ ] Includes transitional phrase (→) for flow  
-   [ ] Ends with healthcare implication  
-
-**Examples:**  
-A) Developed novel GNN architecture → Detected 12 noncoding mutations linked to pancreatic cancer metastasis in TCGA data → Phase II combo therapy trial enrolling. 💊🔬  
-
-B) Random Forest analysis of 500K exomes → Uncovered 3 novel autism-risk genes regulating synapse formation → Personalized Dx tool in development with Boston Children's. 🧠🧬  
-
-C) CRISPR-AI platform validation complete → Predicted 8 functional TP53 variants with 92% clinical concordance → Now optimizing NSCLC targeted therapy protocols. 🧪💻'''
 
     def __init__(self):
         """Initialize AI agent components"""
@@ -155,7 +118,7 @@ C) CRISPR-AI platform validation complete → Predicted 8 functional TP53 varian
         """
         # Build message chain
         messages = [
-            {"role": "system", "content": self.CHAT_SYSTEM_PROMPT},
+            {"role": "system", "content": self.SYSTEM_PROMPT},
             *cache.get(f"conversation_{uuid}", []),
             {"role": "user", "content": user_message}
         ]
@@ -187,9 +150,9 @@ C) CRISPR-AI platform validation complete → Predicted 8 functional TP53 varian
         # Generate content
         response = self.llm_client.chat.completions.create(
             model="deepseek-chat",
-            messages=[{"role": "system", "content": self.TWEET_SYSTEM_PROMPT},
+            messages=[{"role": "system", "content": self.SYSTEM_PROMPT},
                       {"role": "user",
-                       "content": "Generate a technical tweet,the length of the tweet should less than 280 characters"}, ],
+                       "content": "Generate a tweet that includes topics such as machine learning, genes, cutting-edge research, and disease cures. The tweet must be in English and without hashtags"}, ],
             temperature=1,
             max_tokens=280
         )
