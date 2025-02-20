@@ -100,7 +100,7 @@ class YUMEAgent:
         # Initialize LLM client
         self.llm_client = OpenAI(
             api_key=settings.OPENAI_API_KEY,
-            base_url="https://api.deepseek.com"
+            base_url="https://ark.cn-beijing.volces.com/api/v3/"
         )
 
         self.twitter_api = _init_twitter_client()
@@ -125,7 +125,7 @@ class YUMEAgent:
 
         # Generate response
         response = self.llm_client.chat.completions.create(
-            model="deepseek-chat",
+            model="deepseek-v3-241226",
             messages=messages,
             temperature=0.7,
             max_tokens=500
