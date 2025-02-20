@@ -4,7 +4,6 @@ from celery import Celery
 
 # set Django settings module
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'yume_ai_agent.settings')
-
 app = Celery('yume_ai_agent')
 
 # read config from Django settings.py
