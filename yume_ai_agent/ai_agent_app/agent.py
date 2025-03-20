@@ -3,31 +3,31 @@ from typing import List, Dict
 from django.core.cache import cache
 from django.conf import settings
 from openai import OpenAI
-import tweepy
+# import tweepy
 
 
-def _validate_tweet(tweet: str) -> bool:
-    """Validate tweet content before publishing"""
-    if len(tweet) > 280:
-        raise ValueError("Tweet exceeds 280 character limit")
+# def _validate_tweet(tweet: str) -> bool:
+#     """Validate tweet content before publishing"""
+#     if len(tweet) > 280:
+#         raise ValueError("Tweet exceeds 280 character limit")
+#
+#     return True
 
-    return True
-
-
-def _init_twitter_client() -> tweepy.API:
-    """Initialize and verify Twitter API credentials"""
-    try:
-        auth = tweepy.OAuth1UserHandler(
-            consumer_key=settings.TWITTER_CONSUMER_KEY,
-            consumer_secret=settings.TWITTER_CONSUMER_SECRET,
-            access_token=settings.TWITTER_ACCESS_TOKEN,
-            access_token_secret=settings.TWITTER_ACCESS_SECRET,
-        )
-        api = tweepy.API(auth)
-        api.verify_credentials()  # Test credentials
-        return api
-    except tweepy.TweepyException as e:
-        raise RuntimeError(f"Twitter authentication failed: {str(e)}")
+#
+# def _init_twitter_client() -> tweepy.API:
+#     """Initialize and verify Twitter API credentials"""
+#     try:
+#         auth = tweepy.OAuth1UserHandler(
+#             consumer_key=settings.TWITTER_CONSUMER_KEY,
+#             consumer_secret=settings.TWITTER_CONSUMER_SECRET,
+#             access_token=settings.TWITTER_ACCESS_TOKEN,
+#             access_token_secret=settings.TWITTER_ACCESS_SECRET,
+#         )
+#         api = tweepy.API(auth)
+#         api.verify_credentials()  # Test credentials
+#         return api
+#     except tweepy.TweepyException as e:
+#         raise RuntimeError(f"Twitter authentication failed: {str(e)}")
 
 
 def _manage_conversation_history(uuid: str, new_messages: List[Dict]) -> List[Dict]:
@@ -103,7 +103,7 @@ class YUMEAgent:
             base_url="https://ark.cn-beijing.volces.com/api/v3/"
         )
 
-        self.twitter_api = _init_twitter_client()
+        # self.twitter_api = _init_twitter_client()
 
     def generate_ai_response(self, uuid: str, user_message: str) -> str:
         """
@@ -140,61 +140,61 @@ class YUMEAgent:
 
         return ai_response
 
-    def _generate_tweet(self) -> str:
-        """
-        Generate technical research tweet
+    # def _generate_tweet(self) -> str:
+    #     """
+    #     Generate technical research tweet
+    #
+    #     Returns:
+    #         Formatted tweet content adhering to Twitter guidelines
+    #     """
+    #     # Generate content
+    #     response = self.llm_client.chat.completions.create(
+    #         model="deepseek-chat",
+    #         messages=[{"role": "system", "content": self.SYSTEM_PROMPT},
+    #                   {"role": "user",
+    #                    "content": "Generate a tweet that includes topics such as machine learning, genes, cutting-edge research, and disease cures. The tweet must be in English and without hashtags"}, ],
+    #         temperature=1,
+    #         max_tokens=280
+    #     )
+    #
+    #     return response.choices[0].message.content.strip()
 
-        Returns:
-            Formatted tweet content adhering to Twitter guidelines
-        """
-        # Generate content
-        response = self.llm_client.chat.completions.create(
-            model="deepseek-chat",
-            messages=[{"role": "system", "content": self.SYSTEM_PROMPT},
-                      {"role": "user",
-                       "content": "Generate a tweet that includes topics such as machine learning, genes, cutting-edge research, and disease cures. The tweet must be in English and without hashtags"}, ],
-            temperature=1,
-            max_tokens=280
-        )
-
-        return response.choices[0].message.content.strip()
-
-    def publish_tweet(self) -> dict:
-        """
-        Execute complete tweet publication workflow
-
-        Returns:
-            Dictionary containing:
-            - tweet_content: Published tweet content
-            - tweet_id: Published tweet ID
-            - success: Boolean status
-            - error: Error message (if any)
-        """
-        result = {
-            "tweet_content": None,
-            "tweet_id": None,
-            "success": False,
-            "error": None
-        }
-
-        try:
-            # Generate base content
-            tweet = self._generate_tweet()
-            result["tweet_content"] = tweet
-
-            # Validate content
-            _validate_tweet(tweet)
-
-            # Publish tweet
-            response = self.twitter_api.update_status(tweet)
-            result["tweet_id"] = response.id_str
-            result["success"] = True
-
-        except tweepy.TweepyException as e:
-            result["error"] = f"Twitter API error: {str(e)}"
-        except ValueError as e:
-            result["error"] = f"Validation error: {str(e)}"
-        except Exception as e:
-            result["error"] = f"Unexpected error: {str(e)}"
-
-        return result
+    # def publish_tweet(self) -> dict:
+    #     """
+    #     Execute complete tweet publication workflow
+    #
+    #     Returns:
+    #         Dictionary containing:
+    #         - tweet_content: Published tweet content
+    #         - tweet_id: Published tweet ID
+    #         - success: Boolean status
+    #         - error: Error message (if any)
+    #     """
+    #     result = {
+    #         "tweet_content": None,
+    #         "tweet_id": None,
+    #         "success": False,
+    #         "error": None
+    #     }
+    #
+    #     try:
+    #         # Generate base content
+    #         tweet = self._generate_tweet()
+    #         result["tweet_content"] = tweet
+    #
+    #         # Validate content
+    #         _validate_tweet(tweet)
+    #
+    #         # Publish tweet
+    #         response = self.twitter_api.update_status(tweet)
+    #         result["tweet_id"] = response.id_str
+    #         result["success"] = True
+    #
+    #     except tweepy.TweepyException as e:
+    #         result["error"] = f"Twitter API error: {str(e)}"
+    #     except ValueError as e:
+    #         result["error"] = f"Validation error: {str(e)}"
+    #     except Exception as e:
+    #         result["error"] = f"Unexpected error: {str(e)}"
+    #
+    #     return result
