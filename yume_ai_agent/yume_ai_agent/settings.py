@@ -25,7 +25,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 env = environ.Env()
 environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
-OPENAI_API_KEY = env('OPENAI_API_KEY', default='')
+ARK_API_KEY = env('ARK_API_KEY', default='')
 TWITTER_CONSUMER_KEY = env('TWITTER_CONSUMER_KEY', default='')
 TWITTER_CONSUMER_SECRET = env('TWITTER_CONSUMER_SECRET', default='')
 TWITTER_ACCESS_TOKEN = env('TWITTER_ACCESS_TOKEN', default='')

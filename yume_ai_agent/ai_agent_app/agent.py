@@ -99,7 +99,7 @@ class YUMEAgent:
         """Initialize AI agent components"""
         # Initialize LLM client
         self.llm_client = OpenAI(
-            api_key=settings.OPENAI_API_KEY,
+            api_key=settings.ARK_API_KEY,
             base_url="https://ark.cn-beijing.volces.com/api/v3"
         )
 
