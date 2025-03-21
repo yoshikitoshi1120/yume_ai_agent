@@ -100,7 +100,7 @@ class YUMEAgent:
         # Initialize LLM client
         self.llm_client = OpenAI(
             api_key=settings.OPENAI_API_KEY,
-            base_url="https://ark.cn-beijing.volces.com/api/v3/"
+            base_url="https://ark.cn-beijing.volces.com/api/v3"
         )
 
         # self.twitter_api = _init_twitter_client()
